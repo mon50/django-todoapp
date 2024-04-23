@@ -1,0 +1,39 @@
+{% extends 'todoapp/base.html'%}
+{% block content %}
+<h1>Todoリスト</h1>
+
+<a href="{% url 'create-task' %}">タスク追加</a>
+
+<form method="GET">
+    <input type="text" name="search" value="{{ search }}">
+    <input type="submit" value="検索">
+    {% csrf_token %}
+</form>
+
+<table>
+    <tr>
+        <th>タスク名</th>
+    </tr>
+    {% for task in tasks %}
+    <tr>
+        <td>{{ task.title }}</td>
+        <td><a href="{% url 'task' task.id %}">確認</a></td>
+        <td><a href="{% url 'edit-task' task.id %}">更新</a></td>
+        <td><a href="{% url 'delete-task' task.id %}">削除</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="loginAndLogout">
+    {% if request.user.is_authenticated %}
+    <p>{{request.user}}</p>
+    <form action="{% url 'logout' %}" method="post" name="f_logout">
+        {% csrf_token %}
+        <input type="hidden" value="logout">
+        <a href="javascript:f_logout.submit()" class="logout nav-link">ログアウト</a>
+    </form>
+    {% else %}
+    <a href="{% url 'login' %}">ログイン</a>
+    {% endif %}
+</div>
+{% endblock content %}
